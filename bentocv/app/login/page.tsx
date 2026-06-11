@@ -1,6 +1,21 @@
-import Image from "next/image";
+'use client';
+import { createClient } from '../../src/utils/supabase/client';
 
 export default function Home() {
+    const supabase = createClient();
+
+    const handleGitHubLogin = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+
+        if (error) {
+            console.error("Errore durante il login:", error.message);
+        }
+    };
     return (
         <div className="flex flex-col min-h-screen items-center justify-center bg-zinc-950 font-sans text-zinc-50 selection:bg-zinc-800">
             <main className="flex flex-1 w-full max-w-4xl flex-col items-center justify-center px-6 py-24 text-center md:text-left md:items-start md:px-12">
@@ -29,7 +44,7 @@ export default function Home() {
                 <div className="mt-10 w-full flex justify-center md:justify-start">
                     <button
                         className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-6 font-medium text-zinc-200 transition-all hover:bg-zinc-800 hover:border-zinc-700 active:scale-98 sm:w-auto"
-                    // onClick={handleGitHubLogin}
+                        onClick={handleGitHubLogin}
                     >
                         {/* Icona SVG di GitHub */}
                         <svg
