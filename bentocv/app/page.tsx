@@ -1,13 +1,33 @@
+// app/page.tsx
 import Image from "next/image";
+import { getProfile } from "./create/actions";
+import { createClient } from "../src/utils/supabase/server"; 
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    const profile = await getProfile();
+
+    if (profile && profile.username) {
+      // Profilo completo ed esistente
+      redirect('/grid');
+    } else {
+      redirect('/create');
+    }
+  }
+
+  // 3. Se l'utente NON è loggato
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-zinc-950 font-sans text-zinc-50 selection:bg-zinc-800">
       <main className="flex flex-1 w-full max-w-4xl flex-col items-center justify-center px-6 py-24 text-center md:text-left md:items-start md:px-12">
 
         {/* Logo */}
         <div className="mb-8 flex items-center gap-2">
-          <span className="h-6 w-6 rounded-md bg-white dark:bg-zinc-50 flex items-center justify-center font-bold text-xs">
+          <span className="h-6 w-6 rounded-md bg-white flex items-center justify-center font-bold text-xs">
             <p className="text-black">B</p>
           </span>
           <span className="font-semibold tracking-wider text-xl">Bento</span>
@@ -44,10 +64,9 @@ export default function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </a>
-
         </div>
 
-        {/* Badge */}
+        {/* Gradient Glow Background */}
         <div className="absolute top-0 left-1/2 -z-10 h-[600px] w-full max-w-7xl -translate-x-1/2 [background:radial-gradient(100%_100%_at_top_center,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0)_100%)]" />
 
       </main>

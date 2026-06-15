@@ -135,23 +135,23 @@ export async function updateProfile(formData: FormData) {
 export async function getProfile() {
   const supabase = await createClient();
 
+  // 1. Recupera l'utente attualmente loggato nella sessione del browser
   const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
   if (authError || !user) {
-    console.error("Utente non autenticato o sessione scaduta", authError?.message);
     return null;
   }
 
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id) //eq = equals
-    .single(); // una sola riga, no array
+  const { data: profile, error: dbError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single(); // Restituisce un solo oggetto invece di un array
 
-  if (error) {
-    console.error("Errore durante recupero dati utente", error.message);
-    return;
+  if (dbError || !profile) {
+    console.error("Profilo non trovato nel database:", dbError?.message);
+    return null;
   }
 
   return profile;
-
 }
