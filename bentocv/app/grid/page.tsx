@@ -21,12 +21,59 @@ export default async function GridEditor() {
 
       <div className="grid grid-cols-12 gap-6">
         {/* Sidebar Widget (3 colonne) */}
-        <aside className="col-span-3 space-y-4">
+        <aside className="col-span-3 space-y-4 max-h-[85vh] overflow-y-auto pr-2">
 
-          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500">
-            <p>+ Aggiungi Testo</p>
+          <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider px-1 mb-2">
+            Aggiungi Elementi
           </div>
 
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Età</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Data di nascita</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">E-mail</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Numero di telefono</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Social network</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Tech stack preferita</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Progetto</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Motto di vita</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Soft skill</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Hard skill</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Patente</p>
+          </div>
+
+          <div className="p-4 bg-zinc-900 rounded-2xl border border-white/5 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-between group">
+            <p className="text-sm font-medium text-zinc-300 group-hover:text-white">Lingua</p>
+          </div>
 
         </aside>
 
