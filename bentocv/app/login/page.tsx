@@ -16,7 +16,7 @@ export default function Home() {
             console.error("Errore durante il login:", error.message);
         }
     };
-    return (
+    return ( 
         <div className="flex flex-col min-h-screen items-center justify-center bg-zinc-950 font-sans text-zinc-50 selection:bg-zinc-800">
             <main className="flex flex-1 w-full max-w-4xl flex-col items-center justify-center px-6 py-24 text-center md:text-left md:items-start md:px-12">
 

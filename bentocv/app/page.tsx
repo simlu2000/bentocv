@@ -30,13 +30,13 @@ export default function Home() {
           {/* Bottone 1 : creazione del bento */}
           <a
             className="flex h-12 items-center justify-center gap-2 rounded-xl bg-zinc-50 px-6 font-medium text-zinc-950 transition-all hover:bg-zinc-200 active:scale-98 shadow-lg shadow-white/5 sm:w-auto"
-            href="/create"
+            href="/login"
           >
             Crea il tuo Bento
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 24 24"
+              viewBox="0 0 24 24" 
               strokeWidth={2}
               stroke="currentColor"
               className="w-4 h-4"
