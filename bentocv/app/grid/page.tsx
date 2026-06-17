@@ -1,6 +1,7 @@
 import { getProfile } from "../create/actions";
 import { redirect } from "next/navigation";
 import ProfileCard from "./profileCard";
+import { createClient } from '../../src/utils/supabase/client';
 
 export default async function GridEditor() {
   const profile = await getProfile();
@@ -8,22 +9,46 @@ export default async function GridEditor() {
   if (!profile) {
     redirect('/create');
   }
-  
+
+
+  const handleGitHubLogout = async () => {
+    'use server' // Indica a Next.js di eseguire questa funzione sul server
+
+    const supabase = createClient();
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Errore durante il logout:", error.message);
+      return;
+    }
+
+    redirect('/login');
+  };
+
+
   return (
     <div className="min-h-screen bg-black text-white p-8 font-sans selection:bg-zinc-800">
-      
+
       <header className="flex justify-between items-center mb-12 max-w-7xl mx-auto border-b border-zinc-900 pb-6">
         <div>
           <h1 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">Workspace</h1>
           <h2 className="text-2xl font-bold mt-1 text-zinc-100">Ciao {profile.name}, personalizza la tua Griglia</h2>
         </div>
-        <button className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-zinc-950 rounded-full font-bold text-xs transition-all shadow-lg shadow-emerald-500/10">
-          Pubblica Profilo
-        </button>
+
+        <div className="flex flex-row gap-6">
+          <button onClick={handleGitHubLogout} className="px-6 py-2.5 bg-red-500 hover:bg-red-600 active:scale-95 text-neutral-50 rounded-full font-bold text-xs transition-all shadow-lg shadow-emerald-500/10">
+            Esci
+          </button>
+          <button className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-neutral-50 rounded-full font-bold text-xs transition-all shadow-lg shadow-emerald-500/10">
+            Pubblica Profilo
+          </button>
+        </div>
+
       </header>
 
       <div className="grid grid-cols-12 gap-8 max-w-7xl mx-auto">
-        
+
         {/* Sidebar Widget (3 colonne) */}
         <aside className="col-span-3 space-y-3 max-h-[80vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-800">
 
@@ -155,10 +180,10 @@ export default async function GridEditor() {
 
         {/* Area bento(9 colonne) */}
         <main className="col-span-9 grid grid-cols-4 gap-6 bg-zinc-950/20 p-4 rounded-3xl border border-dashed border-zinc-900 min-h-[75vh]">
-          
+
           {/* Blocco Profilo (2 colonne) */}
           <ProfileCard profile={profile} />
-          
+
           {/* Blocco GitHub (2 colonne) */}
           <div className="col-span-2 bg-zinc-900/40 border border-zinc-800/60 rounded-3xl p-6 backdrop-blur-sm flex flex-col justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 flex items-center gap-2">

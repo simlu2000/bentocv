@@ -1,6 +1,5 @@
 'use server';
 
-import { create } from 'domain';
 import { createClient } from '../../src/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -46,9 +45,8 @@ export async function saveProfile(formData: FormData) {
     .upsert(profileData); // upsert = update se profilo esiste, sennò insert, dati che inserisco nella tabella del db
 
   if (error) {
-    console.error("Errore:", error.message);
-    // Ritorniamo l'errore al client invece di fare un return vuoto
-    return;
+    console.error("Errore durante il salvataggio:", error.message);
+    throw new Error(`Salvataggio fallito: ${error.message}`);
   }
 
   // 4. Se il salvataggio va a buon fine, sposta l'utente allo step successivo (es. comporre la griglia)
@@ -126,7 +124,7 @@ export async function updateProfile(formData: FormData) {
 
   if (error) {
     console.error("Errore durante l'aggiornamento del profilo:", error.message);
-    return ;
+    return;
   }
 
   return { success: true };
@@ -137,7 +135,7 @@ export async function getProfile() {
 
   // 1. Recupera l'utente attualmente loggato nella sessione del browser
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  
+
   if (authError || !user) {
     return null;
   }

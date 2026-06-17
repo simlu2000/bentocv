@@ -1,8 +1,3 @@
-/*
-Quando l'utente finisce lo scambio di dati sicuro con GitHub, 
-Supabase riceve un "codice temporaneo" che Next.js deve scambiare con una sessione reale basata su cookie.
-Per fare questo in modo automatico, usare script fornito da supabase:
-*/
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
@@ -10,8 +5,8 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // Se c'è un parametro 'next', reindirizziamo lì, altrimenti andiamo su /create
-  const next = searchParams.get('next') ?? '/create'
+
+  const nextParam = searchParams.get('next')
 
   if (code) {
     const cookieStore = await cookies()
@@ -29,20 +24,33 @@ export async function GET(request: Request) {
                 cookieStore.set(name, value, options)
               )
             } catch {
-              // Questo blocco può essere ignorato se la rotta è chiamata da un Server Component
+
             }
           },
         },
       }
     )
-    
-    // Scambia il codice con una sessione reale salvata nei cookie
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+
+    const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (!error && user) {
+      //  Verifica se utente ha gia compilato un profilo
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id') //vedo se ce un profilo sul db
+        .eq('id', user.id) //il cui id corrisponde a quello dell'utente che si è loggato con github
+        .single()
+
+      if (profile) {
+        // Se il profilo esiste già, redirect alla grid
+        return NextResponse.redirect(`${origin}${nextParam ?? '/grid'}`)
+      } else {
+        // Se il profilo NON esiste, pagina compilazione profilo
+        return NextResponse.redirect(`${origin}/create`)
+      }
     }
   }
 
-  // In caso di errore, rimanda alla pagina di login
-  return NextResponse.redirect(`${origin}/login`)
+  //errore autenticazione - torna indietro
+  return NextResponse.redirect(`${origin}/`)
 }
