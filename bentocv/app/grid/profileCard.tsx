@@ -204,8 +204,6 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
         )}
 
 
-
-
         {/* LOCALITÀ & CV */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
@@ -385,7 +383,45 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
               id="techStack"
               name="techStack"
               placeholder="Es: React, Next.js, TypeScript, Node.js"
-              defaultValue={profile.techStack}
+              defaultValue={profile.tech_stack}
+              readOnly={!isEditing}
+              required
+              className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                }`}
+            />
+          </div>
+        )}
+
+         {/* SOFT SKILL */}
+        {compareWidgetNames(widgetsToAdd, 'softSkill') && (
+          <div className="space-y-1.5">
+            <label htmlFor="softSkill" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              Le tue soft skills
+            </label>
+            <textarea
+              id="softSkill"
+              name="softSkill"
+              placeholder="Es: team working, proattività, ..."
+              defaultValue={profile.soft_skill}
+              readOnly={!isEditing}
+              required
+              className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                }`}
+            />
+          </div>
+        )}
+
+         {/* HARD SKILL */}
+        {compareWidgetNames(widgetsToAdd, 'hardSkill') && (
+          <div className="space-y-1.5">
+            <label htmlFor="hardSkill" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              Le tue hard skills
+            </label>
+            <textarea
+              id="hardSkill"
+              name="hardSkill"
+              placeholder="Es: JavaScript, C#, AWS..."
+              defaultValue={profile.hard_skill}
               readOnly={!isEditing}
               required
               className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
@@ -416,7 +452,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
                   id="projectName"
                   name="projectName"
                   placeholder="Es: Personal Portfolio"
-                  defaultValue={profile.project_name}
+                  defaultValue={profile.project?.name || ''}
                   readOnly={!isEditing}
                   required
                   className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
@@ -434,7 +470,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
                   name="projectDescription"
                   rows={3}
                   placeholder="Es: Applicazione web per la gestione dei profili bento link-in-bio..."
-                  defaultValue={profile.project_description}
+                  defaultValue={profile.project?.description || ''}
                   readOnly={!isEditing}
                   required
                   className={`w-full bg-zinc-950/60 border border-zinc-800/80 rounded-xl p-3 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 resize-none ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
@@ -452,7 +488,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
                   id="projectTechnologies"
                   name="projectTechnologies"
                   placeholder="Es: React, Next.js, Supabase, Tailwind"
-                  defaultValue={profile.project_technologies}
+                  defaultValue={profile.project?.technologies || ''}
                   readOnly={!isEditing}
                   required
                   className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
@@ -470,7 +506,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
                   id="projectLink"
                   name="projectLink"
                   placeholder="https://github.com/... o https://..."
-                  defaultValue={profile.project_link}
+                  defaultValue={profile.project?.link || ''}
                   readOnly={!isEditing}
                   className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
                     }`}

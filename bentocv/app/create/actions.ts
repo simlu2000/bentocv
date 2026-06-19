@@ -31,7 +31,7 @@ export async function saveProfile(formData: FormData) {
     phone_number: null,
     social_links: [],
     tech_stack: [],
-    projects: [],
+    project: [],
     life_motto: null,
     soft_skills: [],
     hard_skills: [],
@@ -53,7 +53,6 @@ export async function saveProfile(formData: FormData) {
   redirect('/grid');
 }
 
-
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
 
@@ -62,25 +61,13 @@ export async function updateProfile(formData: FormData) {
     throw new Error("Utente non autenticato");
   }
 
-  // conversione stringhe separate da virgola in array puliti
+  // Conversione stringhe separate da virgola in array puliti
   const parseToArray = (key: string) => {
     const value = formData.get(key) as string;
     return value ? value.split(',').map(s => s.trim()).filter(Boolean) : null;
   };
 
-  // conversione stringhe JSON in oggetti, o ritornare null/vuoto se non valide
-  const parseJson = (key: string) => {
-    const value = formData.get(key) as string;
-    if (!value) return null;
-    try {
-      return JSON.parse(value);
-    } catch (e) {
-      console.error(`Errore nel parsing JSON per il campo ${key}:`, e);
-      return null;
-    }
-  };
-
-  //dati dal form
+  // Dati base fissi dal form
   const updatedData: any = {
     username: formData.get('username') as string,
     name: formData.get('name') as string,
@@ -89,34 +76,53 @@ export async function updateProfile(formData: FormData) {
     bio: formData.get('bio') as string,
     location: formData.get('location') as string,
     cv_url: formData.get('cv_url') as string,
-    other_data: formData.get('other_data') as string,
     last_update_at: new Date().toISOString(),
   };
 
-  //se ho dati dal form  presi dai widgets -> li gestisco per aggiungerli nel db
+  // --- GESTIONE WIDGET ANAGRAFICI & CONTATTI ---
   if (formData.has('age')) {
     const ageVal = formData.get('age') as string;
     updatedData.age = ageVal ? parseInt(ageVal, 10) : null;
   }
 
-  if (formData.has('birth_date')) {
-    updatedData.birth_date = (formData.get('birth_date') as string) || null;
+  if (formData.has('dateOfBirth')) {
+    updatedData.dateOfBirth = (formData.get('dateOfBirth') as string) || null;
   }
 
   if (formData.has('email')) updatedData.email = formData.get('email') as string;
-  if (formData.has('phone_number')) updatedData.phone_number = formData.get('phone_number') as string;
-  if (formData.has('life_motto')) updatedData.life_motto = formData.get('life_motto') as string;
-  if (formData.has('driving_license')) updatedData.driving_license = formData.get('driving_license') as string;
+  if (formData.has('phoneNumber')) updatedData.phoneNumber = formData.get('phoneNumber') as string;
+  if (formData.has('motto')) updatedData.motto = formData.get('motto') as string;
+  if (formData.has('driverLicense')) updatedData.driverLicense = formData.get('driverLicense') as string;
+  if (formData.has('languages')) updatedData.languages = formData.get('languages') as string;
 
-  if (formData.has('tech_stack')) updatedData.tech_stack = parseToArray('tech_stack');
-  if (formData.has('soft_skills')) updatedData.soft_skills = parseToArray('soft_skills');
-  if (formData.has('hard_skills')) updatedData.hard_skills = parseToArray('hard_skills');
+  // --- GESTIONE COVERSIONE ARRAY (TECH STACK) ---
+  if (formData.has('techStack')) {
+    updatedData.techStack = parseToArray('techStack');
+  }
 
-  if (formData.has('social_links')) updatedData.social_links = parseJson('social_links');
-  if (formData.has('projects')) updatedData.projects = parseJson('projects');
-  if (formData.has('languages')) updatedData.languages = parseJson('languages');
+  // --- GESTIONE COVERSIONE JSONB DALLA STRUTTURA SOCIAL ---
+  if (formData.has('social_github') || formData.has('social_linkedin')) {
+    updatedData.social_links = {
+      github: formData.get('social_github') as string || null,
+      linkedin: formData.get('social_linkedin') as string || null,
+      x: formData.get('social_x') as string || null,
+      tiktok: formData.get('social_tiktok') as string || null,
+      portfolio: formData.get('social_portfolio') as string || null,
+      instagram: formData.get('social_instagram') as string || null,
+    };
+  }
 
-  //aggiornamento db
+  // --- GESTIONE COVERSIONE JSONB DEL PROGETTO VETRINA ---
+  if (formData.has('projectName')) {
+    updatedData.project = {
+      name: formData.get('projectName') as string || null,
+      description: formData.get('projectDescription') as string || null,
+      technologies: formData.get('projectTechnologies') as string || null,
+      link: formData.get('projectLink') as string || null,
+    };
+  }
+
+  // Aggiornamento database
   const { error } = await supabase
     .from('profiles')
     .update(updatedData)
@@ -124,7 +130,7 @@ export async function updateProfile(formData: FormData) {
 
   if (error) {
     console.error("Errore durante l'aggiornamento del profilo:", error.message);
-    return;
+    throw new Error(error.message);
   }
 
   return { success: true };
