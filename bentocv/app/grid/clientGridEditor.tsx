@@ -45,26 +45,44 @@ export default function clientGridEditor({ initialProfile }: clientGridEditorPro
 
 
     const handleAddWidget = (widgetName: string) => {
-    const nextState = !widgetsStatus[widgetName];
-    
-    setWidgetsStatus(prev => ({
-        ...prev,
-        [widgetName]: nextState
-    }));
+        const nextState = !widgetsStatus[widgetName];
 
-    if (nextState) {
-        setWidgetsToAdd((prevWidgets) => {
-            if (!prevWidgets.includes(widgetName)) {
-                return [...prevWidgets, widgetName];
-            }
-            return prevWidgets;
-        });
-    } else {
-        setWidgetsToAdd((prevWidgets) => 
-            prevWidgets.filter((name) => name !== widgetName)
-        );
-    }
-};
+        setWidgetsStatus(prev => ({
+            ...prev,
+            [widgetName]: nextState
+        }));
+
+        if (nextState) {
+            setWidgetsToAdd((allWidgets) => { //controlliamo se quello appena aggiunto non sia gia presente nell'array
+                if (!allWidgets.includes(widgetName)) {
+                    return [...allWidgets, widgetName]; //non c'è il widget nuovo quindi lo aggiungo
+                }
+                // widget gia presente/attivato
+                return allWidgets;
+            });
+        } else {
+            // Se il widget è appena stato disattivato (nextState è false)
+            setWidgetsToAdd((allWidgets) =>
+                // nuovo array filtrato, mantenendo solo i widget che hanno un nome DIVERSO da quello che vogliamo rimuovere
+                allWidgets.filter((name) => name !== widgetName)
+            );
+        }
+    };
+
+    const getWidgetContainerClasses = (widgetName: string) => {
+        const isActive = widgetsStatus[widgetName];
+
+        // Classi base per tutti
+        const baseClasses = "p-3.5 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]";
+
+        // SE NON È ATTIVO (Verde -> Disponibile da aggiungere)
+        // SE È ATTIVO (Rosso -> Già aggiunto, clicca per rimuovere)
+        const dynamicClasses = !isActive
+            ? "bg-emerald-500 border border-emerald-500/20 hover:border-emerald-500/50 hover:bg-emerald-950/10 shadow-sm shadow-emerald-500/5"
+            : "bg-red-500 border border-red-500/20 hover:border-red-500/50 hover:bg-red-950/10 shadow-sm shadow-red-500/5";
+
+        return `${baseClasses} ${dynamicClasses}`;
+    };
 
     return (
         <div className="min-h-screen bg-black text-white p-8 font-sans selection:bg-zinc-800">
@@ -95,168 +113,171 @@ export default function clientGridEditor({ initialProfile }: clientGridEditorPro
                         Aggiungi Componenti
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Età */}
+                    <div className={getWidgetContainerClasses('age')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.age ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-hourglass"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Età</p>
+                            <p className="text-xs font-medium text-zinc-200">Età</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 0)}
-                            className={`fa-solid ${!widgetsStatus[0] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('age')}
+                            className={`fa-solid ${!widgetsStatus.age ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Data di nascita */}
+                    <div className={getWidgetContainerClasses('dateOfBirth')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.dateOfBirth ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-cake-candles"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Data di nascita</p>
+                            <p className="text-xs font-medium text-zinc-200">Data di nascita</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 1)}
-                            className={`fa-solid ${!widgetsStatus[1] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('dateOfBirth')}
+                            className={`fa-solid ${!widgetsStatus.dateOfBirth ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* E-mail di contatto */}
+                    <div className={getWidgetContainerClasses('email')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.email ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-envelope"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">E-mail di contatto</p>
+                            <p className="text-xs font-medium text-zinc-200">E-mail di contatto</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 2)}
-                            className={`fa-solid ${!widgetsStatus[2] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('email')}
+                            className={`fa-solid ${!widgetsStatus.email ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Numero di telefono */}
+                    <div className={getWidgetContainerClasses('phoneNumber')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.phoneNumber ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-phone"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Numero di telefono</p>
+                            <p className="text-xs font-medium text-zinc-200">Numero di telefono</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 3)}
-                            className={`fa-solid ${!widgetsStatus[3] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('phoneNumber')}
+                            className={`fa-solid ${!widgetsStatus.phoneNumber ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Social Network */}
+                    <div className={getWidgetContainerClasses('socialNetwork')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.socialNetwork ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-share-nodes"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Social Network</p>
+                            <p className="text-xs font-medium text-zinc-200">Social Network</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 4)}
-                            className={`fa-solid ${!widgetsStatus[4] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('socialNetwork')}
+                            className={`fa-solid ${!widgetsStatus.socialNetwork ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Tech Stack preferita */}
+                    <div className={getWidgetContainerClasses('techStack')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.techStack ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-layer-group"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Tech Stack preferita</p>
+                            <p className="text-xs font-medium text-zinc-200">Tech Stack preferita</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 5)}
-                            className={`fa-solid ${!widgetsStatus[5] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('techStack')}
+                            className={`fa-solid ${!widgetsStatus.techStack ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Progetto Vetrina */}
+                    <div className={getWidgetContainerClasses('project')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.project ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-code-branch"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Progetto Vetrina</p>
+                            <p className="text-xs font-medium text-zinc-200">Progetto Vetrina</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 6)}
-                            className={`fa-solid ${!widgetsStatus[6] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('project')}
+                            className={`fa-solid ${!widgetsStatus.project ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Motto di vita */}
+                    <div className={getWidgetContainerClasses('motto')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.motto ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-quote-left"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Motto di vita</p>
+                            <p className="text-xs font-medium text-zinc-200">Motto di vita</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 7)}
-                            className={`fa-solid ${!widgetsStatus[7] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('motto')}
+                            className={`fa-solid ${!widgetsStatus.motto ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Soft Skill */}
+                    <div className={getWidgetContainerClasses('softSkill')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.softSkill ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-brain"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Soft Skill</p>
+                            <p className="text-xs font-medium text-zinc-200">Soft Skill</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 8)}
-                            className={`fa-solid ${!widgetsStatus[8] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('softSkill')}
+                            className={`fa-solid ${!widgetsStatus.softSkill ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Hard Skill */}
+                    <div className={getWidgetContainerClasses('hardSkill')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.hardSkill ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-terminal"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Hard Skill</p>
+                            <p className="text-xs font-medium text-zinc-200">Hard Skill</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 9)}
-                            className={`fa-solid ${!widgetsStatus[9] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('hardSkill')}
+                            className={`fa-solid ${!widgetsStatus.hardSkill ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Patente di guida */}
+                    <div className={getWidgetContainerClasses('driverLicense')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.driverLicense ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-id-card"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Patente di guida</p>
+                            <p className="text-xs font-medium text-zinc-200">Patente di guida</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 10)}
-                            className={`fa-solid ${!widgetsStatus[10] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('driverLicense')}
+                            className={`fa-solid ${!widgetsStatus.driverLicense ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
-
                     </div>
 
-                    <div className="p-3.5 bg-zinc-900/60 border border-zinc-800/60 hover:border-zinc-700 hover:bg-zinc-900 rounded-xl cursor-pointer transition-all flex items-center justify-between group active:scale-[0.99]">
+                    {/* Lingue conosciute */}
+                    <div className={getWidgetContainerClasses('languages')}>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                            <div className={`w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center transition-colors ${!widgetsStatus.languages ? 'text-emerald-400' : 'text-red-400'}`}>
                                 <i className="fa-solid fa-language"></i>
                             </div>
-                            <p className="text-xs font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">Lingue conosciute</p>
+                            <p className="text-xs font-medium text-zinc-200">Lingue conosciute</p>
                         </div>
                         <i
-                            onClick={() => handleAddWidget('age', 11)}
-                            className={`fa-solid ${!widgetsStatus[11] ? 'fa-plus' : 'fa-minus'} text-[10px] text-zinc-600 group-hover:text-emerald-400 transition-colors`}
+                            onClick={() => handleAddWidget('languages')}
+                            className={`fa-solid ${!widgetsStatus.languages ? 'fa-plus text-emerald-400 group-hover:text-emerald-300' : 'fa-minus text-red-400 group-hover:text-red-300'} text-[11px] transition-colors`}
                         ></i>
                     </div>
 
