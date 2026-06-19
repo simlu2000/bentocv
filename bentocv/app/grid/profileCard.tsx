@@ -204,7 +204,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
         )}
 
 
-       
+
 
         {/* LOCALITÀ & CV */}
         <div className="grid grid-cols-2 gap-4">
@@ -232,7 +232,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
           </div>
         </div>
 
- {/*WIDGET EMAIL*/}
+        {/*WIDGET EMAIL*/}
         {compareWidgetNames(widgetsToAdd, 'email') && (
           <div className="space-y-1.5">
             <label htmlFor="name" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">E-mail di contatto</label>
@@ -250,7 +250,7 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
 
         {/* WIDGET SOCIAL NETWORK */}
         {compareWidgetNames(widgetsToAdd, 'socialNetwork') && (
-        
+
           <div className="space-y-4 border-t border-zinc-900 pt-4 mt-2">
             <div>
               <label className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
@@ -394,42 +394,129 @@ export default function ProfileCard({ profile, widgetsToAdd }: ProfileCardProps)
           </div>
         )}
 
-        {/* COMPETENZE AGGIUNTIVE (PATENTE & LINGUE) */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* WIDGET PATENTE DI GUIDA */}
-            {compareWidgetNames(widgetsToAdd, 'driverLicense') && (
-              <div className="space-y-1.5">
-                <label htmlFor="driverLicense" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Patente di guida</label>
-                <input
-                  type="text"
-                  id="driverLicense"
-                  name="driverLicense"
-                  placeholder="Es: B, Automunito"
-                  defaultValue={profile.driverLicense}
-                  readOnly={!isEditing}
-                  required
-                  className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'}`}
-                />
-              </div>
-            )}
+        {/* WIDGET PROGETTO VETRINA*/}
+        {compareWidgetNames(widgetsToAdd, 'project') && (
+          <div className="space-y-4 border-t border-zinc-900 pt-4">
+            <div>
+              <label className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+                Progetto Vetrina
+              </label>
+              <p className="text-[10px] text-zinc-600 mt-0.5">Mostra il tuo progetto migliore nel profilo</p>
+            </div>
 
-            {/* WIDGET LINGUE CONOSCIUTE */}
-            {compareWidgetNames(widgetsToAdd, 'languages') && (
+            <div className="space-y-4 bg-zinc-950/20 p-4 rounded-2xl border border-zinc-800/40">
+
+              {/* Nome Progetto */}
               <div className="space-y-1.5">
-                <label htmlFor="languages" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Lingue conosciute</label>
+                <label htmlFor="projectName" className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                  Nome del Progetto
+                </label>
                 <input
                   type="text"
-                  id="languages"
-                  name="languages"
-                  placeholder="Es: Italiano (Madrelingua), Inglese (B2)"
-                  defaultValue={profile.languages}
+                  id="projectName"
+                  name="projectName"
+                  placeholder="Es: Personal Portfolio"
+                  defaultValue={profile.project_name}
                   readOnly={!isEditing}
                   required
-                  className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'}`}
+                  className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                    }`}
                 />
               </div>
-            )}
+
+              {/* Descrizione Progetto */}
+              <div className="space-y-1.5">
+                <label htmlFor="projectDescription" className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                  Descrizione
+                </label>
+                <textarea
+                  id="projectDescription"
+                  name="projectDescription"
+                  rows={3}
+                  placeholder="Es: Applicazione web per la gestione dei profili bento link-in-bio..."
+                  defaultValue={profile.project_description}
+                  readOnly={!isEditing}
+                  required
+                  className={`w-full bg-zinc-950/60 border border-zinc-800/80 rounded-xl p-3 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 resize-none ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                    }`}
+                />
+              </div>
+
+              {/* Tecnologie usate */}
+              <div className="space-y-1.5">
+                <label htmlFor="projectTechnologies" className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                  Tecnologie usate
+                </label>
+                <input
+                  type="text"
+                  id="projectTechnologies"
+                  name="projectTechnologies"
+                  placeholder="Es: React, Next.js, Supabase, Tailwind"
+                  defaultValue={profile.project_technologies}
+                  readOnly={!isEditing}
+                  required
+                  className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                    }`}
+                />
+              </div>
+
+              {/* Link Progetto (Sito o GitHub) */}
+              <div className="space-y-1.5">
+                <label htmlFor="projectLink" className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                  Link di Progetto (Sito Live o GitHub)
+                </label>
+                <input
+                  type="url"
+                  id="projectLink"
+                  name="projectLink"
+                  placeholder="https://github.com/... o https://..."
+                  defaultValue={profile.project_link}
+                  readOnly={!isEditing}
+                  className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'
+                    }`}
+                />
+              </div>
+
+            </div>
           </div>
+        )}
+
+        {/* COMPETENZE AGGIUNTIVE (PATENTE & LINGUE) */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* WIDGET PATENTE DI GUIDA */}
+          {compareWidgetNames(widgetsToAdd, 'driverLicense') && (
+            <div className="space-y-1.5">
+              <label htmlFor="driverLicense" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Patente di guida</label>
+              <input
+                type="text"
+                id="driverLicense"
+                name="driverLicense"
+                placeholder="Es: B, Automunito"
+                defaultValue={profile.driverLicense}
+                readOnly={!isEditing}
+                required
+                className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'}`}
+              />
+            </div>
+          )}
+
+          {/* WIDGET LINGUE CONOSCIUTE */}
+          {compareWidgetNames(widgetsToAdd, 'languages') && (
+            <div className="space-y-1.5">
+              <label htmlFor="languages" className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Lingue conosciute</label>
+              <input
+                type="text"
+                id="languages"
+                name="languages"
+                placeholder="Es: Italiano (Madrelingua), Inglese (B2)"
+                defaultValue={profile.languages}
+                readOnly={!isEditing}
+                required
+                className={`w-full h-10 bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-4 text-sm text-white outline-none transition-all focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 ${!isEditing && 'opacity-60 cursor-not-allowed bg-zinc-950/20'}`}
+              />
+            </div>
+          )}
+        </div>
 
 
         {/* BOTTONE DINAMICO DI INVIO */}
